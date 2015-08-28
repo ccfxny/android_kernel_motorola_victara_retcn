@@ -12,7 +12,6 @@
 #define __ASM_ARM_ATOMIC_H
 
 #include <linux/compiler.h>
-#include <linux/prefetch.h>
 #include <linux/types.h>
 #include <linux/irqflags.h>
 #include <asm/barrier.h>
@@ -42,7 +41,6 @@ static inline void atomic_add(int i, atomic_t *v)
 	unsigned long tmp;
 	int result;
 
-	prefetchw(&v->counter);
 	__asm__ __volatile__("@ atomic_add\n"
 "1:	ldrex	%0, [%3]\n"
 "	add	%0, %0, %4\n"
@@ -60,7 +58,6 @@ static inline int atomic_add_return(int i, atomic_t *v)
 	int result;
 
 	smp_mb();
-	prefetchw(&v->counter);
 
 	__asm__ __volatile__("@ atomic_add_return\n"
 "1:	ldrex	%0, [%3]\n"
@@ -82,7 +79,6 @@ static inline void atomic_sub(int i, atomic_t *v)
 	unsigned long tmp;
 	int result;
 
-	prefetchw(&v->counter);
 	__asm__ __volatile__("@ atomic_sub\n"
 "1:	ldrex	%0, [%3]\n"
 "	sub	%0, %0, %4\n"
@@ -100,7 +96,6 @@ static inline int atomic_sub_return(int i, atomic_t *v)
 	int result;
 
 	smp_mb();
-	prefetchw(&v->counter);
 
 	__asm__ __volatile__("@ atomic_sub_return\n"
 "1:	ldrex	%0, [%3]\n"
@@ -122,7 +117,6 @@ static inline int atomic_cmpxchg(atomic_t *ptr, int old, int new)
 	unsigned long oldval, res;
 
 	smp_mb();
-	prefetchw(&ptr->counter);
 
 	do {
 		__asm__ __volatile__("@ atomic_cmpxchg\n"
@@ -144,7 +138,6 @@ static inline void atomic_clear_mask(unsigned long mask, unsigned long *addr)
 {
 	unsigned long tmp, tmp2;
 
-	prefetchw(addr);
 	__asm__ __volatile__("@ atomic_clear_mask\n"
 "1:	ldrex	%0, [%3]\n"
 "	bic	%0, %0, %4\n"
@@ -267,7 +260,6 @@ static inline void atomic64_set(atomic64_t *v, u64 i)
 {
 	u64 tmp;
 
-	prefetchw(&v->counter);
 	__asm__ __volatile__("@ atomic64_set\n"
 "1:	ldrexd	%0, %H0, [%2]\n"
 "	strexd	%0, %3, %H3, [%2]\n"
@@ -283,7 +275,6 @@ static inline void atomic64_add(u64 i, atomic64_t *v)
 	u64 result;
 	unsigned long tmp;
 
-	prefetchw(&v->counter);
 	__asm__ __volatile__("@ atomic64_add\n"
 "1:	ldrexd	%0, %H0, [%3]\n"
 "	adds	%0, %0, %4\n"
@@ -302,7 +293,6 @@ static inline u64 atomic64_add_return(u64 i, atomic64_t *v)
 	unsigned long tmp;
 
 	smp_mb();
-	prefetchw(&v->counter);
 
 	__asm__ __volatile__("@ atomic64_add_return\n"
 "1:	ldrexd	%0, %H0, [%3]\n"
@@ -325,7 +315,6 @@ static inline void atomic64_sub(u64 i, atomic64_t *v)
 	u64 result;
 	unsigned long tmp;
 
-	prefetchw(&v->counter);
 	__asm__ __volatile__("@ atomic64_sub\n"
 "1:	ldrexd	%0, %H0, [%3]\n"
 "	subs	%0, %0, %4\n"
@@ -344,7 +333,6 @@ static inline u64 atomic64_sub_return(u64 i, atomic64_t *v)
 	unsigned long tmp;
 
 	smp_mb();
-	prefetchw(&v->counter);
 
 	__asm__ __volatile__("@ atomic64_sub_return\n"
 "1:	ldrexd	%0, %H0, [%3]\n"
@@ -368,7 +356,6 @@ static inline u64 atomic64_cmpxchg(atomic64_t *ptr, u64 old, u64 new)
 	unsigned long res;
 
 	smp_mb();
-	prefetchw(&ptr->counter);
 
 	do {
 		__asm__ __volatile__("@ atomic64_cmpxchg\n"
@@ -393,7 +380,6 @@ static inline u64 atomic64_xchg(atomic64_t *ptr, u64 new)
 	unsigned long tmp;
 
 	smp_mb();
-	prefetchw(&ptr->counter);
 
 	__asm__ __volatile__("@ atomic64_xchg\n"
 "1:	ldrexd	%0, %H0, [%3]\n"
@@ -415,7 +401,6 @@ static inline u64 atomic64_dec_if_positive(atomic64_t *v)
 	unsigned long tmp;
 
 	smp_mb();
-	prefetchw(&v->counter);
 
 	__asm__ __volatile__("@ atomic64_dec_if_positive\n"
 "1:	ldrexd	%0, %H0, [%3]\n"
@@ -443,7 +428,6 @@ static inline int atomic64_add_unless(atomic64_t *v, u64 a, u64 u)
 	int ret = 1;
 
 	smp_mb();
-	prefetchw(&v->counter);
 
 	__asm__ __volatile__("@ atomic64_add_unless\n"
 "1:	ldrexd	%0, %H0, [%4]\n"
